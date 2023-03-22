@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import AsyncMock, MagicMock
 
-from homeassistant.components.my_chatbot.chatbot import Chatbot
+from homeassistant.components.ha_chatbot_interface.sensor import Chatbot
 
 @pytest.mark.asyncio
 async def test_async_send_message():

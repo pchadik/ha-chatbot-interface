@@ -46,6 +46,10 @@ PLATFORM_SCHEMA = vol.Schema(
     extra=vol.ALLOW_EXTRA,
 )
 
+async def async_setup(hass, config):
+    """Empty setup function."""
+    return True
+
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
     api_endpoint = config[CONF_API_ENDPOINT]
     api_key = config[CONF_API_KEY]
