@@ -65,43 +65,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
     async_add_entities([sensor])
 
-async def async_send_message(self, message):
-    headers = {'Content-Type': 'application/json'}
-    if self._api_key:
-        headers['Authorization'] = f'Bearer {self._api_key}'
-
-    payload = {
-    "data": [
-        message,
-        params['max_new_tokens'],
-        params['do_sample'],
-        params['temperature'],
-        params['top_p'],
-        params['typical_p'],
-        params['repetition_penalty'],
-        params['encoder_repetition_penalty'],
-        params['top_k'],
-        params['min_length'],
-        params['no_repeat_ngram_size'],
-        params['num_beams'],
-        params['penalty_alpha'],
-        params['length_penalty'],
-        params['early_stopping'],
-    ]}
-
-    try:
-        async with self._session.post(self._api_endpoint, json=payload, headers=headers) as resp:
-            if resp.status == 200:
-                response_data = await resp.json()
-                return response_data['data'][0]
-                # later pass history back and forth, and display only relevant part of response:
-                # print(reply[len(prompt) + 2:reply.find('User:',len(prompt)+2)])
-            else:
-                _LOGGER.error(f'Error {resp.status}: {await resp.text()}')
-                return None
-    except aiohttp.ClientError as err:
-        _LOGGER.error(f'Error while sending message to chatbot: {err}')
-        return None
+# Remove the async_send_message function outside of any class
 
 class Chatbot:
     def __init__(self, session, api_endpoint, api_key=None):
@@ -110,12 +74,40 @@ class Chatbot:
         self._api_key = api_key
 
     async def async_send_message(self, message):
-        _LOGGER.debug("API endpoint: %s", self._chatbot._api_endpoint)
-        _LOGGER.debug("Sending message to chatbot: %s", message)
-        response = await self._chatbot.send_message(message)
-        self._state = response
-        _LOGGER.debug("Received response from chatbot: %s", response)
-        await self.async_update_ha_state()
+        headers = {'Content-Type': 'application/json'}
+        if self._api_key:
+            headers['Authorization'] = f'Bearer {self._api_key}'
+
+        payload = {
+            "data": [
+                message,
+                params['max_new_tokens'],
+                params['do_sample'],
+                params['temperature'],
+                params['top_p'],
+                params['typical_p'],
+                params['repetition_penalty'],
+                params['encoder_repetition_penalty'],
+                params['top_k'],
+                params['min_length'],
+                params['no_repeat_ngram_size'],
+                params['num_beams'],
+                params['penalty_alpha'],
+                params['length_penalty'],
+                params['early_stopping'],
+            ]}
+
+        try:
+            async with self._session.post(self._api_endpoint, json=payload, headers=headers) as resp:
+                if resp.status == 200:
+                    response_data = await resp.json()
+                    return response_data['data'][0]
+                else:
+                    _LOGGER.error(f'Error {resp.status}: {await resp.text()}')
+                    return None
+        except aiohttp.ClientError as err:
+            _LOGGER.error(f'Error while sending message to chatbot: {err}')
+            return None
 
 class ChatbotSensor(Entity):
     def __init__(self, chatbot):
@@ -135,7 +127,9 @@ class ChatbotSensor(Entity):
         return False
 
     async def async_send_message(self, message):
-        response = await self._chatbot.async_send_message(message)
+        _LOGGER.debug("API endpoint: %s", self._chatbot._api_endpoint)
+        _LOGGER.debug("Sending message to chatbot: %s", message)
+        response = await self._chatbot.async_send_message(message)  # Add the async keyword here
         self._state = response
         _LOGGER.debug("Received response from chatbot: %s", response)
-        self.async_schedule_update_ha_state()
+        await self.async_update_ha_state()
