@@ -10,6 +10,9 @@ from homeassistant.helpers.aiohttp_client import async_get_clientsession
 import homeassistant.helpers.config_validation as cv
 from homeassistant.const import CONF_API_KEY
 
+from homeassistant.config_entries import ConfigEntry
+from homeassistant.core import HomeAssistant, callback
+
 _LOGGER = logging.getLogger(__name__)
 
 CONF_API_ENDPOINT = 'api_endpoint'
@@ -47,6 +50,10 @@ async def async_setup(hass, config):
     return True
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+    """Empty setup function (no longer used)."""
+    pass
+    
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities):
     api_endpoint = config[CONF_API_ENDPOINT]
     api_key = config[CONF_API_KEY]
 
@@ -73,10 +80,12 @@ class Chatbot:
         self._api_endpoint = api_endpoint
         self._api_key = api_key
 
-    async def async_send_message(self, message):
+    async def send_message(self, message, options):
         headers = {'Content-Type': 'application/json'}
         if self._api_key:
             headers['Authorization'] = f'Bearer {self._api_key}'
+
+        params.update(options)
 
         payload = {
             "data": [
@@ -110,8 +119,9 @@ class Chatbot:
             return None
 
 class ChatbotSensor(Entity):
-    def __init__(self, chatbot):
+    def __init__(self, chatbot, entry):
         self._chatbot = chatbot
+        self._entry = entry
         self._state = None
 
     @property
@@ -129,7 +139,7 @@ class ChatbotSensor(Entity):
     async def async_send_message(self, message):
         _LOGGER.debug("API endpoint: %s", self._chatbot._api_endpoint)
         _LOGGER.debug("Sending message to chatbot: %s", message)
-        response = await self._chatbot.async_send_message(message)  # Add the async keyword here
+        response = await self._chatbot.send_message(message, self._entry.options)
         self._state = response
         _LOGGER.debug("Received response from chatbot: %s", response)
         await self.async_update_ha_state()
