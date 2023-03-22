@@ -3,6 +3,7 @@ import logging
 import voluptuous as vol
 import json
 
+from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 import homeassistant.helpers.config_validation as cv
 from homeassistant.const import CONF_API_KEY
