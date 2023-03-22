@@ -4,6 +4,7 @@ import voluptuous as vol
 import json
 
 from homeassistant.helpers.entity import Entity
+from homeassistant.components.sensor import PLATFORM_SCHEMA
 # from homeassistant.helpers.entity_platform import EntityPlatform
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 import homeassistant.helpers.config_validation as cv
