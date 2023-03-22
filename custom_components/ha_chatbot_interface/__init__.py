@@ -1,3 +1,3 @@
 """Custom chatbot component for Home Assistant."""
 
-from .sensor import async_setup
+from .sensor import async_setup_platform
