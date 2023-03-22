@@ -88,7 +88,7 @@ async def async_send_message(self, message):
         params['penalty_alpha'],
         params['length_penalty'],
         params['early_stopping'],
-    ]
+    ]}
 
     try:
         async with self._session.post(self._api_endpoint, json=payload, headers=headers) as resp:
