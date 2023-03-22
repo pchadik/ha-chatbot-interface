@@ -115,7 +115,8 @@ class ChatbotSensor(Entity):
         self._chatbot = chatbot
         self._entry = entry
         self._state = None
-
+        self._unique_id = f"chatbot_{DOMAIN}"
+        
     @property
     def name(self):
         return "Chatbot"
