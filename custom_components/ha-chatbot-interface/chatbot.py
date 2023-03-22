@@ -52,18 +52,28 @@ async def async_setup(hass, config):
     session = async_get_clientsession(hass)
     chatbot = Chatbot(session, api_endpoint, api_key)
 
-    hass.data[DOMAIN] = chatbot
-
     sensor = ChatbotSensor(chatbot)
-    await sensor.async_added_to_hass()
-    hass.states.async_set(sensor.entity_id, None)
 
     async def handle_send_message(call):
         message = call.data.get('message')
-        response = await sensor.async_send_message(message)
-        _LOGGER.info(f'Chatbot response: {response}')
-        
+        await sensor.async_send_message(message)
+
     hass.services.async_register(DOMAIN, 'send_message', handle_send_message)
+
+    async def async_add_chatbot_sensor(entities, update_before_add=False):
+        hass.add_job(hass.data[DOMAIN]["entity_platform"].async_add_entities(entities, update_before_add))
+
+    hass.data[DOMAIN] = {
+        "entity_platform": EntityPlatform(
+            hass,
+            DOMAIN,
+            hass.loop,
+            async_add_chatbot_sensor,
+            None
+        )
+    }
+
+    hass.data[DOMAIN]["entity_platform"].async_add_entities([sensor])
 
     return True
 
