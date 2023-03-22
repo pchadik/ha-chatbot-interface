@@ -34,21 +34,21 @@ params = {
     'early_stopping': True,
 }
 
-CONFIG_SCHEMA = vol.Schema(
+PLATFORM_SCHEMA = vol.Schema(
     {
         DOMAIN: vol.Schema(
             {
                 vol.Required(CONF_API_ENDPOINT): cv.url,
-                vol.Optional(CONF_API_KEY): cv.string,
+                vol.Required(CONF_API_KEY): cv.string,
             }
         )
     },
     extra=vol.ALLOW_EXTRA,
 )
 
-async def async_setup(hass, config):
-    api_endpoint = config[DOMAIN][CONF_API_ENDPOINT]
-    api_key = config[DOMAIN][CONF_API_KEY]
+async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
+    api_endpoint = config[CONF_API_ENDPOINT]
+    api_key = config[CONF_API_KEY]
 
     session = aiohttp_client.async_get_clientsession(hass)
 
@@ -62,13 +62,7 @@ async def async_setup(hass, config):
 
     hass.services.async_register(DOMAIN, 'send_message', handle_send_message)
 
-    async def async_setup_platform(p_type, p_config, async_add_entities, discovery_info=None):
-        async_add_entities([sensor])
-
-    hass.helpers.discovery.async_load_platform('sensor', DOMAIN, {}, config)
-    hass.async_create_task(hass.config_entries.async_forward_entry_setup(config_entry, 'sensor'))
-
-    return True
+    async_add_entities([sensor])
 
 async def async_send_message(self, message):
     headers = {'Content-Type': 'application/json'}
