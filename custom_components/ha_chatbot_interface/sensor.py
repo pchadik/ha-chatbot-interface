@@ -110,8 +110,12 @@ class Chatbot:
         self._api_key = api_key
 
     async def async_send_message(self, message):
-        # Implement API interaction here
-        pass
+        _LOGGER.debug("API endpoint: %s", self._chatbot._api_endpoint)
+        _LOGGER.debug("Sending message to chatbot: %s", message)
+        response = await self._chatbot.send_message(message)
+        self._state = response
+        _LOGGER.debug("Received response from chatbot: %s", response)
+        await self.async_update_ha_state()
 
 class ChatbotSensor(Entity):
     def __init__(self, chatbot):
