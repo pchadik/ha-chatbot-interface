@@ -13,6 +13,25 @@ CONF_API_ENDPOINT = 'api_endpoint'
 
 DOMAIN = 'my_chatbot'
 
+# Generation parameters
+# Reference: https://huggingface.co/docs/transformers/main_classes/text_generation#transformers.GenerationConfig
+params = {
+    'max_new_tokens': 50,
+    'do_sample': True,
+    'temperature': 1.99,
+    'top_p': 0.18,
+    'typical_p': 1,
+    'repetition_penalty': 1.05,
+    'encoder_repetition_penalty': 1.0,
+    'top_k': 30,
+    'min_length': 0,
+    'no_repeat_ngram_size': 0,
+    'num_beams': 1,
+    'penalty_alpha': 0,
+    'length_penalty': 10,
+    'early_stopping': True,
+}
+
 CONFIG_SCHEMA = vol.Schema(
     {
         DOMAIN: vol.Schema(
@@ -52,13 +71,32 @@ async def async_send_message(self, message):
     if self._api_key:
         headers['Authorization'] = f'Bearer {self._api_key}'
 
-    payload = {'message': message}
+    payload = {
+    "data": [
+        message,
+        params['max_new_tokens'],
+        params['do_sample'],
+        params['temperature'],
+        params['top_p'],
+        params['typical_p'],
+        params['repetition_penalty'],
+        params['encoder_repetition_penalty'],
+        params['top_k'],
+        params['min_length'],
+        params['no_repeat_ngram_size'],
+        params['num_beams'],
+        params['penalty_alpha'],
+        params['length_penalty'],
+        params['early_stopping'],
+    ]
 
     try:
         async with self._session.post(self._api_endpoint, json=payload, headers=headers) as resp:
             if resp.status == 200:
                 response_data = await resp.json()
-                return response_data['response']
+                return response_data['data'][0]
+                # later pass history back and forth, and display only relevant part of response:
+                # print(reply[len(prompt) + 2:reply.find('User:',len(prompt)+2)])
             else:
                 _LOGGER.error(f'Error {resp.status}: {await resp.text()}')
                 return None
