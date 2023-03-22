@@ -1,7 +1,7 @@
 {
   "domain": "ha_chatbot_interface",
   "name": "HA Chatbot Interface",
-  "documentation": "https://github.com/pchadik/ha-chatbot-interface",
+  "documentation": "https://github.com/pchadik/ha_chatbot_interface",
   "codeowners": ["@pchadik"],
   "dependencies": [],
   "requirements": [],
