@@ -44,8 +44,8 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
         vol.Required(CONF_API_KEY): cv.string,
     }
 )
-    
-async def async_setup_entry(hass, config_entry, async_add_entities):
+
+async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
     api_endpoint = config_entry.data[CONF_API_ENDPOINT]
     api_key = config_entry.data[CONF_API_KEY]
 
@@ -53,7 +53,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
     chatbot = Chatbot(session, api_endpoint, api_key)
 
-    sensor = ChatbotSensor(chatbot)
+    sensor = ChatbotSensor(chatbot, config_entry)
 
     async def handle_send_message(call):
         message = call.data.get('message')
@@ -62,7 +62,9 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
 
     hass.services.async_register(DOMAIN, 'send_message', handle_send_message)
 
-    async_add_entities([sensor])
+    hass.async_create_task(hass.config_entries.async_forward_entry_setup(config_entry, "sensor"))
+
+    return True
 
 # Remove the async_send_message function outside of any class
 
