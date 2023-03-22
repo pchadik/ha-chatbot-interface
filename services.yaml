@@ -1,0 +1,6 @@
+send_message:
+  description: Sends a message to the chatbot and logs the response.
+  fields:
+    message:
+      description: The message to send to the chatbot.
+      example: "What's the weather like today?"
