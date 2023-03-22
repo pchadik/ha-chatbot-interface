@@ -34,16 +34,11 @@ params = {
     'early_stopping': True,
 }
 
-PLATFORM_SCHEMA = vol.Schema(
+PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
-        DOMAIN: vol.Schema(
-            {
-                vol.Required(CONF_API_ENDPOINT): cv.url,
-                vol.Required(CONF_API_KEY): cv.string,
-            }
-        )
-    },
-    extra=vol.ALLOW_EXTRA,
+        vol.Required(CONF_API_ENDPOINT): cv.url,
+        vol.Required(CONF_API_KEY): cv.string,
+    }
 )
 
 async def async_setup(hass, config):
