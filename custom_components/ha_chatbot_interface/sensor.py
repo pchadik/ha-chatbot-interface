@@ -4,7 +4,7 @@ import voluptuous as vol
 import json
 
 from homeassistant.helpers.entity import Entity
-from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.helpers.config_validation import PLATFORM_SCHEMA
 # from homeassistant.helpers.entity_platform import EntityPlatform
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 import homeassistant.helpers.config_validation as cv
@@ -50,7 +50,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     api_endpoint = config[CONF_API_ENDPOINT]
     api_key = config[CONF_API_KEY]
 
-    session = aiohttp_client.async_get_clientsession(hass)
+    session = async_get_clientsession(hass)
 
     chatbot = Chatbot(session, api_endpoint, api_key)
 
@@ -58,6 +58,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
     async def handle_send_message(call):
         message = call.data.get('message')
+        _LOGGER.debug("Sending message to chatbot: %s", message)
         await sensor.async_send_message(message)
 
     hass.services.async_register(DOMAIN, 'send_message', handle_send_message)
@@ -132,4 +133,5 @@ class ChatbotSensor(Entity):
     async def async_send_message(self, message):
         response = await self._chatbot.async_send_message(message)
         self._state = response
+        _LOGGER.debug("Received response from chatbot: %s", response)
         self.async_schedule_update_ha_state()
