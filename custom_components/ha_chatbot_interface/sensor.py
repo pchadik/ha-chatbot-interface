@@ -44,18 +44,10 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
         vol.Required(CONF_API_KEY): cv.string,
     }
 )
-
-async def async_setup(hass, config):
-    """Empty setup function."""
-    return True
-
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
-    """Empty setup function (no longer used)."""
-    pass
     
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_entities):
-    api_endpoint = config[CONF_API_ENDPOINT]
-    api_key = config[CONF_API_KEY]
+async def async_setup_entry(hass, config_entry, async_add_entities):
+    api_endpoint = config_entry.data[CONF_API_ENDPOINT]
+    api_key = config_entry.data[CONF_API_KEY]
 
     session = async_get_clientsession(hass)
 
