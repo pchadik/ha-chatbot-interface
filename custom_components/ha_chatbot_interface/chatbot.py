@@ -4,7 +4,7 @@ import voluptuous as vol
 import json
 
 from homeassistant.helpers.entity import Entity
-from homeassistant.helpers.entity_platform import EntityPlatform
+# from homeassistant.helpers.entity_platform import EntityPlatform
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 import homeassistant.helpers.config_validation as cv
 from homeassistant.const import CONF_API_KEY
@@ -48,9 +48,10 @@ CONFIG_SCHEMA = vol.Schema(
 
 async def async_setup(hass, config):
     api_endpoint = config[DOMAIN][CONF_API_ENDPOINT]
-    api_key = config[DOMAIN].get(CONF_API_KEY)
+    api_key = config[DOMAIN][CONF_API_KEY]
 
-    session = async_get_clientsession(hass)
+    session = aiohttp_client.async_get_clientsession(hass)
+
     chatbot = Chatbot(session, api_endpoint, api_key)
 
     sensor = ChatbotSensor(chatbot)
@@ -61,20 +62,11 @@ async def async_setup(hass, config):
 
     hass.services.async_register(DOMAIN, 'send_message', handle_send_message)
 
-    async def async_add_chatbot_sensor(entities, update_before_add=False):
-        hass.add_job(hass.data[DOMAIN]["entity_platform"].async_add_entities(entities, update_before_add))
+    async def async_setup_platform(p_type, p_config, async_add_entities, discovery_info=None):
+        async_add_entities([sensor])
 
-    hass.data[DOMAIN] = {
-        "entity_platform": EntityPlatform(
-            hass,
-            DOMAIN,
-            hass.loop,
-            async_add_chatbot_sensor,
-            None
-        )
-    }
-
-    hass.data[DOMAIN]["entity_platform"].async_add_entities([sensor])
+    hass.helpers.discovery.async_load_platform('sensor', DOMAIN, {}, config)
+    hass.async_create_task(hass.config_entries.async_forward_entry_setup(config_entry, 'sensor'))
 
     return True
 
