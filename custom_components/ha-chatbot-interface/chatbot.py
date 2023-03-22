@@ -12,7 +12,7 @@ _LOGGER = logging.getLogger(__name__)
 
 CONF_API_ENDPOINT = 'api_endpoint'
 
-DOMAIN = 'my_chatbot'
+DOMAIN = 'ha-chatbot-interface'
 
 # Generation parameters
 # Reference: https://huggingface.co/docs/transformers/main_classes/text_generation#transformers.GenerationConfig
