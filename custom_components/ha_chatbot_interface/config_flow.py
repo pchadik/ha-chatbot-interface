@@ -20,6 +20,8 @@ from .const import DOMAIN, CONF_API_ENDPOINT, CONF_API_KEY, CONF_TEMPERATURE, CO
 #        return value
 #    raise vol.Invalid("Top_p must be between 0.1 and 1.0.")
 
+_LOGGER = logging.getLogger(__name__)
+
 USER_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_API_ENDPOINT): str,
