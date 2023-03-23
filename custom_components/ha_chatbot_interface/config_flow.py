@@ -7,6 +7,18 @@ from .const import DOMAIN, CONF_API_ENDPOINT, CONF_API_KEY, CONF_TEMPERATURE, CO
 def url_validator(value):
     return cv.url(value)
 
+def temperature_validator(value):
+    value = float(value)
+    if 0.1 <= value <= 5.0:
+        return value
+    raise vol.Invalid("Temperature must be between 0.1 and 5.0.")
+
+def top_p_validator(value):
+    value = float(value)
+    if 0.1 <= value <= 1.0:
+        return value
+    raise vol.Invalid("Top_p must be between 0.1 and 1.0.")
+
 USER_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_API_ENDPOINT): url_validator,
@@ -16,8 +28,8 @@ USER_SCHEMA = vol.Schema(
 
 OPTIONS_SCHEMA = vol.Schema(
     {
-        vol.Optional(CONF_TEMPERATURE, default=1.0): vol.All(vol.Coerce(float), vol.Range(min=0.1, max=5.0)),
-        vol.Optional(CONF_TOP_P, default=0.9): vol.All(vol.Coerce(float), vol.Range(min=0.1, max=1.0)),
+        vol.Optional(CONF_TEMPERATURE, default=1.0): temperature_validator,
+        vol.Optional(CONF_TOP_P, default=0.9): top_p_validator,
     },
     extra=vol.ALLOW_EXTRA
 )
