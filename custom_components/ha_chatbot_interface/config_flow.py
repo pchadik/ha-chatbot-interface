@@ -4,32 +4,32 @@ from homeassistant.core import callback
 from homeassistant.helpers import config_validation as cv
 from .const import DOMAIN, CONF_API_ENDPOINT, CONF_API_KEY, CONF_TEMPERATURE, CONF_TOP_P
 
-def url_validator(value):
-    return cv.url(value)
+#def url_validator(value):
+#    return cv.url(value)
 
-def temperature_validator(value):
-    value = float(value)
-    if 0.1 <= value <= 5.0:
-        return value
-    raise vol.Invalid("Temperature must be between 0.1 and 5.0.")
+#def temperature_validator(value):
+#    value = float(value)
+#    if 0.1 <= value <= 5.0:
+#        return value
+#    raise vol.Invalid("Temperature must be between 0.1 and 5.0.")
 
-def top_p_validator(value):
-    value = float(value)
-    if 0.1 <= value <= 1.0:
-        return value
-    raise vol.Invalid("Top_p must be between 0.1 and 1.0.")
+#def top_p_validator(value):
+#    value = float(value)
+#    if 0.1 <= value <= 1.0:
+#        return value
+#    raise vol.Invalid("Top_p must be between 0.1 and 1.0.")
 
 USER_SCHEMA = vol.Schema(
     {
-        vol.Required(CONF_API_ENDPOINT): url_validator,
-        vol.Required(CONF_API_KEY): cv.string,
+        vol.Required(CONF_API_ENDPOINT): str,
+        vol.Required(CONF_API_KEY): str,
     }
 )
 
 OPTIONS_SCHEMA = vol.Schema(
     {
-        vol.Optional(CONF_TEMPERATURE, default=1.0): temperature_validator,
-        vol.Optional(CONF_TOP_P, default=0.9): top_p_validator,
+        vol.Optional(CONF_TEMPERATURE, default=1.0): float,
+        vol.Optional(CONF_TOP_P, default=0.9): float,
     },
     extra=vol.ALLOW_EXTRA
 )
