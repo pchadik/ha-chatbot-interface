@@ -8,16 +8,16 @@ from homeassistant.helpers.config_validation import PLATFORM_SCHEMA
 # from homeassistant.helpers.entity_platform import EntityPlatform
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 import homeassistant.helpers.config_validation as cv
-from homeassistant.const import CONF_API_KEY
+from .const import DOMAIN, CONF_API_ENDPOINT, CONF_API_KEY
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant, callback
 
 _LOGGER = logging.getLogger(__name__)
 
-CONF_API_ENDPOINT = 'api_endpoint'
+#CONF_API_ENDPOINT = 'api_endpoint'
 
-DOMAIN = 'ha_chatbot_interface'
+#DOMAIN = 'ha_chatbot_interface'
 
 # Generation parameters
 # Reference: https://huggingface.co/docs/transformers/main_classes/text_generation#transformers.GenerationConfig
