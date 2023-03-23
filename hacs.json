@@ -1,0 +1,15 @@
+{
+  "name": "Home Assistant Chatbot Interface",
+  "content_in_root": true,
+  "domains": ["ha_chatbot_interface"],
+  "documentation": "https://github.com/pchadik/ha_chatbot_interface/blob/main/README.md",
+  "issue_tracker": "https://github.com/pchadik/ha_chatbot_interface/issues",
+  "changelog": "https://github.com/pchadik/ha_chatbot_interface/blob/main/CHANGELOG.md",
+  "zip_release": true,
+  "manifest": "custom_components/ha_chatbot_interface/manifest.json",
+  "config_flow": true,
+  "render_readme": true,
+  "country": ["US", "CA"],
+  "category": "integration",
+  "homeassistant": "2021.9.0"
+}
