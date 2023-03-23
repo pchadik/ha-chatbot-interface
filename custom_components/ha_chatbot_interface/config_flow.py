@@ -1,3 +1,4 @@
+import logging
 import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.core import callback
@@ -22,7 +23,7 @@ from .const import DOMAIN, CONF_API_ENDPOINT, CONF_API_KEY, CONF_TEMPERATURE, CO
 USER_SCHEMA = vol.Schema(
     {
         vol.Required(CONF_API_ENDPOINT): str,
-        vol.Required(CONF_API_KEY): str,
+        vol.Optional(CONF_API_KEY): str,
     }
 )
 
@@ -38,6 +39,7 @@ class HaChatbotInterfaceConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     VERSION = 1
 
     async def async_step_user(self, user_input=None):
+        _LOGGER.debug("async_step_user called with user_input: %s", user_input)
         if user_input is not None:
             # Create the config entry with the provided user input
             return self.async_create_entry(title="Home Assistant Chatbot Interface", data=user_input)
@@ -58,6 +60,7 @@ class HaChatbotInterfaceOptionsFlowHandler(config_entries.OptionsFlow):
         self.config_entry = config_entry
 
     async def async_step_init(self, user_input=None):
+        _LOGGER.debug("async_step_init called with user_input: %s", user_input)
         if user_input is not None:
             # Update the options and save them to the config entry
             return self.async_create_entry(title="", data=user_input)
