@@ -1,9 +1,10 @@
 {
   "domain": "ha_chatbot_interface",
-  "name": "HA Chatbot Interface",
+  "name": "Home Assistant Chatbot Interface",
+  "config_flow": true,
   "documentation": "https://github.com/pchadik/ha_chatbot_interface",
-  "codeowners": ["@pchadik"],
-  "dependencies": [],
   "requirements": [],
-  "version": "0.5.0"
+  "dependencies": [],
+  "codeowners": ["@pchadik"],
+  "version": "0.9.0"
 }
