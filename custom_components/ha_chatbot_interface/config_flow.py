@@ -1,25 +1,25 @@
 import voluptuous as vol
-
 from homeassistant import config_entries
 from homeassistant.core import callback
-import homeassistant.helpers.config_validation as cv
-
+from homeassistant.helpers import config_validation as cv
 from .const import DOMAIN, CONF_API_ENDPOINT, CONF_API_KEY, CONF_TEMPERATURE, CONF_TOP_P
 
+def url_validator(value):
+    return cv.url(value)
 
-# Define the schema for the user step
 USER_SCHEMA = vol.Schema(
     {
-        vol.Required(CONF_API_ENDPOINT): cv.url,
+        vol.Required(CONF_API_ENDPOINT): url_validator,
         vol.Required(CONF_API_KEY): cv.string,
     }
 )
 
 OPTIONS_SCHEMA = vol.Schema(
     {
-        vol.Required(CONF_TEMPERATURE, default=1.0): vol.All(vol.Coerce(float), vol.Range(min=0.1, max=5.0)),
-        vol.Required(CONF_TOP_P, default=0.9): vol.All(vol.Coerce(float), vol.Range(min=0.1, max=1.0)),
-    }
+        vol.Optional(CONF_TEMPERATURE, default=1.0): vol.All(vol.Coerce(float), vol.Range(min=0.1, max=5.0)),
+        vol.Optional(CONF_TOP_P, default=0.9): vol.All(vol.Coerce(float), vol.Range(min=0.1, max=1.0)),
+    },
+    extra=vol.ALLOW_EXTRA
 )
 
 class HaChatbotInterfaceConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
@@ -28,7 +28,7 @@ class HaChatbotInterfaceConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     async def async_step_user(self, user_input=None):
         if user_input is not None:
             # Create the config entry with the provided user input
-            return self.async_create_entry(title="HA Chatbot Interface", data=user_input)
+            return self.async_create_entry(title="Home Assistant Chatbot Interface", data=user_input)
 
         return self.async_show_form(step_id="user", data_schema=USER_SCHEMA)
 
