@@ -4,7 +4,8 @@ from homeassistant import config_entries
 from homeassistant.core import callback
 import homeassistant.helpers.config_validation as cv
 
-from .const import DOMAIN, CONF_API_ENDPOINT, CONF_API_KEY
+from .const import DOMAIN, CONF_API_ENDPOINT, CONF_API_KEY, CONF_TEMPERATURE, CONF_TOP_P
+
 
 # Define the schema for the user step
 USER_SCHEMA = vol.Schema(
@@ -14,11 +15,10 @@ USER_SCHEMA = vol.Schema(
     }
 )
 
-# Define the schema for the options step
 OPTIONS_SCHEMA = vol.Schema(
     {
-        vol.Optional("temperature", default=1.0): vol.All(vol.Coerce(float), vol.Range(min=0.1, max=5.0)),
-        vol.Optional("top_p", default=0.9): vol.All(vol.Coerce(float), vol.Range(min=0.1, max=1.0)),
+        vol.Optional(CONF_TEMPERATURE, default=1.0): vol.All(vol.Coerce(float), vol.Range(min=0.1, max=5.0)),
+        vol.Optional(CONF_TOP_P, default=0.9): vol.All(vol.Coerce(float), vol.Range(min=0.1, max=1.0)),
     }
 )
 
