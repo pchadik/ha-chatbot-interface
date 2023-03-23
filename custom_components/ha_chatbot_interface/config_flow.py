@@ -19,7 +19,8 @@ OPTIONS_SCHEMA = vol.Schema(
     {
         vol.Optional(CONF_TEMPERATURE, default=1.0): vol.All(vol.Coerce(float), vol.Range(min=0.1, max=5.0)),
         vol.Optional(CONF_TOP_P, default=0.9): vol.All(vol.Coerce(float), vol.Range(min=0.1, max=1.0)),
-    }
+    },
+    extra=vol.ALLOW_EXTRA
 )
 
 class HaChatbotInterfaceConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
